@@ -12,7 +12,11 @@ let api = axios.create({
 export default new Vuex.Store({
   state: {
     cars: [],
-    activeCar: {}
+    activeCar: {},
+    houses: [],
+    activeHouse: {},
+    jobs: [],
+    activeJob: {}
   },
   mutations: {
     setCars(state, data) {
@@ -20,9 +24,22 @@ export default new Vuex.Store({
     },
     setActiveCar(state, data) {
       state.activeCar = data
+    },
+    setHouses(state, data) {
+      state.houses = data
+    },
+    setActiveHouse(state, data) {
+      state.activeHouse = data
+    },
+    setJobs(state, data) {
+      state.jobs = data
+    },
+    setActiveJob(state, data) {
+      state.activeJob = data
     }
   },
   actions: {
+    // ######################    Cars    #####################################
     async getCars({ dispatch, commit }) {
       try {
         let res = await api.get('cars')
@@ -52,6 +69,7 @@ export default new Vuex.Store({
         console.error(error)
       }
     },
+
     async addCar({ dispatch, commit }, payload) {
       try {
         let res = await api.post('cars/', payload)
@@ -60,5 +78,77 @@ export default new Vuex.Store({
         console.error(error)
       }
     },
+    // ######################    Houses    #####################################
+    async getHouses({ dispatch, commit }) {
+      try {
+        let res = await api.get('houses')
+        console.log(res.data.data)
+        commit('setHouses', res.data.data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getHouseById({ dispatch, commit }, payload) {
+      try {
+        let res = await api.get('houses/' + payload.houseId)
+        commit('setActiveHouse', res.data.data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async addHouse({ dispatch, commit }, payload) {
+      try {
+        let res = await api.post('houses/', payload)
+        dispatch('getHouses')
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async deleteHouse({ dispatch, commit }, payload) {
+      try {
+        let res = await api.delete('houses/' + payload)
+        router.push({ name: 'houses' })
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    // ######################    Jobs    #####################################
+    goBack() {
+      router.push({ name: 'jobs' })
+    },
+    async deleteJob({ dispatch, commit }, payload) {
+      try {
+        let res = await api.delete('jobs/' + payload)
+        router.push({ name: 'jobs' })
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async addJob({ dispatch, commit }, payload) {
+      try {
+        let res = await api.post('jobs/', payload)
+        dispatch('getJobs')
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async getJobs({ dispatch, commit }) {
+      try {
+        let res = await api.get('jobs')
+        console.log(res.data.data)
+        commit('setJobs', res.data.data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async getJobById({ dispatch, commit }, payload) {
+      try {
+        let res = await api.get('jobs/' + payload.jobId)
+        commit('setActiveJob', res.data.data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
   }
 })
